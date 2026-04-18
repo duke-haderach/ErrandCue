@@ -1,0 +1,2 @@
+package com.example.errandcue.domain.model
+data class ResolvedReminder(val placeId: Long, val placeName: String, val taskIds: List<Long>, val notificationTitle: String, val notificationBody: String, val speechText: String)
