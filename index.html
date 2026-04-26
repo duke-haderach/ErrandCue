@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>ErrandCue Demo</title>
+<style>
+:root{--bg:#f8f9fa;--surface:#fff;--surface2:#eef2f7;--primary:#1a73e8;--green:#2e7d32;--purple:#6a1b9a;--orange:#e65100;--text:#1c1c1e;--sub:#6b7280;--chip:#e8f0fe;--red:#c62828}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:linear-gradient(135deg,#edf2ff,#f8f9fa);color:var(--text)}
+.shell{display:flex;min-height:100vh;align-items:center;justify-content:center;padding:24px;gap:22px;flex-wrap:wrap}
+.phone{width:390px;height:844px;background:var(--bg);border-radius:34px;box-shadow:0 20px 60px rgba(0,0,0,.18);overflow:hidden;position:relative;border:10px solid #111;transform:scale(.98);transition:.25s ease}
+.phone:hover{transform:scale(1)}
+.status,.appbar{background:var(--surface2);padding:12px 18px;display:flex;align-items:center;justify-content:space-between}.status{font-size:12px;padding-top:10px}
+.appbar{height:52px;font-weight:700}.title{display:flex;gap:8px;align-items:center;font-size:18px}
+.content{height:calc(100% - 94px);overflow:auto;padding:14px}
+.banner{background:#1b5e20;color:#fff;border-radius:14px;padding:14px;display:flex;gap:12px;align-items:center;box-shadow:0 8px 16px rgba(0,0,0,.12)}
+.dot{width:10px;height:10px;border-radius:50%;background:#69f0ae;box-shadow:0 0 0 6px rgba(105,240,174,.15)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}.card{background:var(--surface);border:1px solid rgba(0,0,0,.07);border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.stat{padding:12px;text-align:center}.stat .v{font-weight:800;font-size:20px;margin-top:6px}.stat .l{color:var(--sub);font-size:11px}
+.section{font-size:12px;color:var(--sub);margin:10px 0 6px}.chips{display:flex;gap:8px;flex-wrap:wrap}.chip{background:var(--chip);color:var(--primary);padding:6px 10px;border-radius:999px;font-size:12px;border:1px solid rgba(26,115,232,.16)}
+.task{padding:12px;margin:10px 0;display:flex;align-items:center;gap:12px}.iconbox{width:44px;height:44px;border-radius:12px;background:var(--chip);display:grid;place-items:center;font-size:18px}.task .meta{flex:1}.task .meta .t{font-weight:700}.task .meta .p{font-size:12px;color:var(--sub);margin-top:2px}.task .badges{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}.mini{padding:3px 7px;border-radius:6px;font-size:10px;font-weight:700}.arrive{background:rgba(26,115,232,.12);color:var(--primary)}.dwell{background:rgba(106,27,154,.12);color:var(--purple)}.dismiss{background:rgba(198,40,40,.12);color:var(--red)}.any{background:rgba(46,125,50,.12);color:var(--green)}.drive{background:rgba(230,81,0,.12);color:var(--orange)}
+.fab{position:absolute;right:18px;bottom:18px;background:var(--primary);color:#fff;border:none;border-radius:999px;padding:14px 18px;font-weight:700;box-shadow:0 12px 20px rgba(26,115,232,.3)}
+.form .field{margin:10px 0}.label{font-size:11px;color:var(--sub);margin-bottom:6px}.input,.textarea,.toggle,.btn,.btn2{width:100%;background:var(--surface);border:1px solid rgba(0,0,0,.1);border-radius:12px;padding:12px 14px;font-size:14px}.textarea{min-height:76px;resize:none}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.btn{background:var(--primary);color:#fff;font-weight:700}.btn2{background:#fff;color:var(--primary);font-weight:700}.sectionline{height:1px;background:#e5e7eb;margin:14px 0}.filter{display:flex;gap:10px}.filter .pill{flex:1;padding:11px;border-radius:999px;text-align:center;font-weight:700;border:1px solid rgba(0,0,0,.1)}.pill.on{background:var(--primary);color:#fff;border-color:transparent}.pill.off{background:rgba(198,40,40,.1);color:var(--red);border-color:rgba(198,40,40,.25)}
+.history .event{padding:14px;display:flex;gap:12px;align-items:center}.bubble{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:rgba(26,115,232,.12);font-size:18px}.event .t{font-weight:700}.event .sub{font-size:12px;color:var(--sub);margin-top:2px}.event .time{font-size:11px;color:var(--sub);margin-top:6px}.settings .rowcard{padding:14px;display:flex;align-items:center;gap:12px}.togglepill{width:58px;height:30px;border-radius:999px;background:#2e7d32;position:relative;margin-left:auto}.togglepill::after{content:'';width:22px;height:22px;background:#fff;border-radius:50%;position:absolute;top:4px;right:4px}.off{background:#bdbdbd}.off::after{left:4px;right:auto}.footer{padding:14px}.small{font-size:11px;color:var(--sub)}
+.navtop{display:flex;gap:8px}.navtop a{text-decoration:none;color:var(--text);font-size:12px;padding:7px 10px;border-radius:999px;background:#fff;border:1px solid rgba(0,0,0,.08);font-weight:700}.tabs{display:flex;gap:8px;margin:10px 0 14px}.tab{flex:1;padding:10px;text-align:center;border-radius:12px;background:#fff;border:1px solid rgba(0,0,0,.08);font-weight:700}.tab.active{background:var(--primary);color:#fff;border-color:transparent}
+.screen{display:none}.screen.active{display:block}
+.bottomnav{position:absolute;left:12px;right:12px;bottom:12px;background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:18px;display:grid;grid-template-columns:repeat(4,1fr);padding:8px;box-shadow:0 8px 18px rgba(0,0,0,.08)}
+.bottomnav button{border:none;background:transparent;padding:8px 4px;border-radius:12px;font-weight:700;color:var(--sub)}
+.bottomnav button.active{background:var(--chip);color:var(--primary)}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700}
+.badge.primary{background:rgba(26,115,232,.12);color:var(--primary)}.badge.green{background:rgba(46,125,50,.12);color:var(--green)}.badge.orange{background:rgba(230,81,0,.12);color:var(--orange)}.badge.red{background:rgba(198,40,40,.12);color:var(--red)}
+.screenshot-grid{display:flex;gap:18px;flex-wrap:wrap;justify-content:center}
+.legend{max-width:1180px;margin:0 auto 18px;color:#334155;font-size:14px}
+</style>
+</head>
+<body>
+<div class="legend">Interactive demo: tap the bottom nav inside the phone UI to switch screens. The task list now includes both <strong>on arrival</strong> and <strong>on dismissal</strong> reminders.</div>
+<div class="shell">
+  <div class="phone">
+    <div class="status"><div>9:41 AM</div><div>●▌▌</div></div>
+    <div class="appbar"><div class="title">📍 ErrandCue</div><div class="navtop"><a href="#" onclick="show('history')">History</a><a href="#" onclick="show('settings')">Settings</a></div></div>
+    <div class="content screen active" id="home">
+      <div class="banner"><div class="dot"></div><div><div style="font-weight:800">Geofences Active</div><div style="font-size:12px;opacity:.9">Monitoring 5 places in background</div></div></div>
+      <div class="stats"><div class="card stat"><div>📝</div><div class="v">5</div><div class="l">Active Tasks</div></div><div class="card stat"><div>📍</div><div class="v">5</div><div class="l">Places Armed</div></div><div class="card stat"><div>🔊</div><div class="v">ON</div><div class="l">Voice</div></div></div>
+      <div class="section">Permissions</div><div class="chips"><div class="chip">📍 Location</div><div class="chip">🔕 Background</div><div class="chip">🔔 Notify</div></div>
+      <div class="section" style="color:#111;font-size:14px;font-weight:700">Your Errands</div>
+      <div class="card task"><div class="iconbox">📌</div><div class="meta"><div class="t">Return Amazon package</div><div class="p">📍 UPS Store NYC</div><div class="badges"><div class="mini arrive">ARRIVAL</div><div class="mini dismiss">DISMISSAL</div><div class="mini any">ANY</div></div></div><div>›</div></div>
+      <div class="card task"><div class="iconbox">📌</div><div class="meta"><div class="t">Pick up dry cleaning</div><div class="p">📍 Martinizing Cleaners</div><div class="badges"><div class="mini arrive">ARRIVAL</div><div class="mini dismiss">DISMISSAL</div><div class="mini any">ANY</div></div></div><div>›</div></div>
+      <div class="card task"><div class="iconbox">📌</div><div class="meta"><div class="t">Grab groceries</div><div class="p">📍 Whole Foods NYC</div><div class="badges"><div class="mini dwell">DWELL</div><div class="mini dismiss">DISMISSAL</div><div class="mini drive">DRIVING</div></div></div><div>›</div></div>
+      <div class="card task"><div class="iconbox">📌</div><div class="meta"><div class="t">Drop off library books</div><div class="p">📍 NYC Library</div><div class="badges"><div class="mini arrive">ARRIVAL</div><div class="mini dismiss">DISMISSAL</div><div class="mini any">ANY</div></div></div><div>›</div></div>
+      <button class="fab" onclick="show('task')">＋ Add Task</button>
+    </div>
+    <div class="content screen" id="task">
+      <div class="card" style="padding:14px;margin-bottom:12px;background:var(--surface2)"><a href="#" onclick="show('home')">← Back</a> <span style="font-weight:800;margin-left:10px">New Errand</span></div>
+      <div class="section" style="color:#1a73e8;font-weight:800">✅ Task Details</div>
+      <div class="card form" style="padding:14px">
+        <div class="field"><div class="label">Task title *</div><div class="input">Return Amazon package</div></div>
+        <div class="field"><div class="label">Notes</div><div class="textarea">Box is at front door</div></div>
+        <div class="field"><div class="label">Spoken reminder text</div><div class="textarea">Return the Amazon package to UPS</div></div>
+      </div>
+      <div class="sectionline"></div>
+      <div class="section" style="color:#1a73e8;font-weight:800">📍 Place</div>
+      <div class="card form" style="padding:14px">
+        <div class="field"><div class="label">Place name</div><div class="input">UPS Store NYC</div></div>
+        <div class="row"><div class="field"><div class="label">Latitude</div><div class="input">38.8106</div></div><div class="field"><div class="label">Longitude</div><div class="input">-90.6998</div></div></div>
+        <div class="field"><div class="label">Radius (meters)</div><div class="input">150</div></div>
+      </div>
+      <div class="sectionline"></div>
+      <div class="section" style="color:#1a73e8;font-weight:800">🔔 Trigger</div>
+      <div class="filter"><div class="pill on">✓ On Arrival</div><div class="pill off">On Dismissal</div></div>
+      <div style="height:16px"></div>
+      <div class="btn">✅ Save &amp; Arm Geofence</div><div style="height:10px"></div>
+      <div class="btn2">Cancel</div>
+    </div>
+    <div class="content screen history" id="history">
+      <div class="card" style="padding:14px;margin-bottom:12px;background:var(--surface2)"><a href="#" onclick="show('home')">← Back</a> <span style="font-weight:800;margin-left:10px">Reminder History</span></div>
+      <div class="card event"><div class="bubble">📍</div><div><div class="t">UPS Store NYC</div><div class="sub">ARRIVAL • 🔊 Spoken</div><div class="time">Apr 18, 1:05 PM</div></div></div>
+      <div class="card event"><div class="bubble" style="background:rgba(198,40,40,.12)">📍</div><div><div class="t">Martinizing Cleaners</div><div class="sub">DISMISSAL • DONE</div><div class="time">Apr 18, 11:22 AM</div></div></div>
+      <div class="card event"><div class="bubble">📍</div><div><div class="t">Whole Foods NYC</div><div class="sub">ARRIVAL • 🔊 Spoken • SNOOZE</div><div class="time">Apr 17, 5:47 PM</div></div></div>
+      <div class="card event"><div class="bubble">📍</div><div><div class="t">NYC Library</div><div class="sub">ARRIVAL • 🔊 Spoken • DONE</div><div class="time">Apr 16, 3:10 PM</div></div></div>
+    </div>
+    <div class="content screen settings" id="settings">
+      <div class="card" style="padding:14px;margin-bottom:12px;background:var(--surface2)"><a href="#" onclick="show('home')">← Back</a> <span style="font-weight:800;margin-left:10px">Settings</span></div>
+      <div class="section" style="color:#1a73e8;font-weight:800">REMINDERS</div>
+      <div class="card rowcard"><div>🔊</div><div><div style="font-weight:700">Spoken reminders</div><div class="small">Read tasks aloud when triggered</div></div><div class="togglepill"></div></div>
+      <div class="card rowcard"><div>🚗</div><div><div style="font-weight:700">Driving mode only</div><div class="small">Only speak while driving</div></div><div class="togglepill off"></div></div>
+      <div class="section" style="color:#1a73e8;font-weight:800">BEHAVIOR</div>
+      <div class="card rowcard"><div>⏱</div><div><div style="font-weight:700">15-min cooldown</div><div class="small">Silence repeats per place</div></div><div class="togglepill"></div></div>
+      <div class="card rowcard"><div>🗺️</div><div><div style="font-weight:700">Google Maps handoff</div><div class="small">Launch nav near saved places</div></div><div class="togglepill"></div></div>
+      <div class="card footer"><div style="font-weight:800">ErrandCue</div><div class="small">Version 0.1.0 • Location-aware errand reminders</div></div>
+    </div>
+    <div class="bottomnav"><button class="active" onclick="show('home');setActive(this)">Home</button><button onclick="show('task');setActive(this)">Add</button><button onclick="show('history');setActive(this)">History</button><button onclick="show('settings');setActive(this)">Settings</button></div>
+  </div>
+</div>
+<script>
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
+function setActive(el){document.querySelectorAll('.bottomnav button').forEach(b=>b.classList.remove('active'));el.classList.add('active')}
+</script>
+</body>
+</html>
